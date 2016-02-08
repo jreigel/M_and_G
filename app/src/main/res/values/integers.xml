@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Signup field lengths-->
+    <integer name="maxNameLength">12</integer>
+    <integer name="maxStudentIdLength">10</integer>
+    <integer name="maxEmailLength">320</integer>
+    <integer name="maxPasswordLength">128</integer>
+</resources>

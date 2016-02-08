@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.justin.mg">
+
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/m_and_g"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        >
+        <activity
+            android:name=".LoginActivity"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".HomeScreen"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_home_screen"
+            android:theme="@style/FullscreenTheme" />
+        <activity
+            android:name=".MakeTransaction"
+            android:label="@string/title_activity_make_transaction"
+            android:parentActivityName="com.example.justin.mg.HomeScreen"/>
+        <activity
+            android:name=".ViewPurchases"
+            android:label="@string/title_activity_view_purchases"
+            android:parentActivityName="com.example.justin.mg.HomeScreen"/>
+        <activity android:name=".ViewTransactions"
+            android:label="@string/title_activity_view_transaction_offers"
+            android:parentActivityName="com.example.justin.mg.HomeScreen"/>
+        <activity android:name=".Signup"></activity>
+    </application>
+
+</manifest>
