@@ -12,8 +12,12 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ViewTransactions extends AppCompatActivity {
     private String [][] fillerData= {{"Name", "Amount", "Decision"}, {"Jane", "$7.00"}, {"Steve", "$8.00"}, {"Sam", "$5.50"}  };
+    private DBhandler helper = new DBhandler(this);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,8 +26,21 @@ public class ViewTransactions extends AppCompatActivity {
 
         TableRow tableRow;
         int textSize, typeface;
+        Bundle extras = getIntent().getExtras();
 
         RelativeLayout rl=(RelativeLayout)findViewById(R.id.transactionLayout);
+
+        int id;
+        List<List<String>> productDetails;
+
+
+        if (extras != null) {
+            id = (int) extras.get("id");
+            productDetails = helper.getPurchases(id);
+//            todo: fragment these to keep textviews on all screens.
+//            todo: move code to a different function.
+            System.out.println(productDetails);
+        }
 
         TableLayout tableLayout = new TableLayout(getApplicationContext());
         RelativeLayout.LayoutParams tableParams = new RelativeLayout.LayoutParams(

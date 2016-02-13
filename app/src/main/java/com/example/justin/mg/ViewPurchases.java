@@ -12,36 +12,68 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+
 public class ViewPurchases extends AppCompatActivity {
-    private String [][] fillerData= {{"Business", "Amount", "Date"}, {"Subway", "$6.17", "12/15/15"}, {"Starbucks", "$8.32", "12/20/15"}, {"Chik-fil-a", "$10.50", "12/23/15"} };
+//    private String [][] fillerData= {{"Business", "Amount", "Date"}, {"Subway", "$6.17", "12/15/15"}, {"Starbucks", "$8.32", "12/20/15"}, {"Chik-fil-a", "$10.50", "12/23/15"} };
+    private DBhandler helper = new DBhandler(this);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle extras = getIntent().getExtras();
         setContentView(R.layout.activity_view_purchases);
+
         if(getSupportActionBar()!=null)getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         TableLayout tableLayout = new TableLayout(getApplicationContext());
         tableLayout.setVerticalScrollBarEnabled(true);
+
+        int id;
+        List<List<String>> productDetails = new ArrayList<>();
+
+
+
         TableRow tableRow;
         int textSize, typeface;
+        String [][] fillerData= {{"Business", "Amount", "Date"}, {"Subway", "$6.17", "12/15/15"}, {"Starbucks", "$8.32", "12/20/15"}, {"Chik-fil-a", "$10.50", "12/23/15"} };
+
+        if (extras != null) {
+            id = (int) extras.get("id");
+            productDetails = helper.getPurchases(id);
+//            todo: fragment these to keep textviews on all screens.
+//            todo: move code to a different function.
+            System.out.println(productDetails);
+        }
+
+//        TODO: Refactor and update the Scroll View so it works with rotate and doesnt use magic numbers.
 
         RelativeLayout.LayoutParams tableParams = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.WRAP_CONTENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT
+                1000
         );
-        tableParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+
 
         RelativeLayout rl=(RelativeLayout)findViewById(R.id.purchaseLayout);
+
+        tableParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
         ScrollView sv = new ScrollView(this);
 
         sv.addView(tableLayout);
         rl.addView(sv, tableParams);
-        for(int i = 0; i < fillerData.length; i++)
+        for(int i = 0; i < productDetails.size(); i++)
         {
             tableRow = new TableRow(getApplicationContext());
-            for(int j = 0; j< fillerData[i].length; j++)
+            for(int j = 0; j< productDetails.get(i).size(); j++)
             {
                 TextView columnData = new TextView(getApplicationContext());
-                columnData.setText(fillerData[i][j]);
+                if(j == 1) {
+                    DecimalFormat df = new DecimalFormat("#0.00");
+                    columnData.setText("$" + df.format(Float.parseFloat(productDetails.get(i).get(j))));
+                }
+                else{
+                    columnData.setText(productDetails.get(i).get(j));
+                }
                 columnData.setTextColor(Color.BLACK);
                 columnData.setPadding(20, 20, 20, 20);
                 columnData.setBackground(ContextCompat.getDrawable(this, R.drawable.table_border));

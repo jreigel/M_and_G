@@ -14,42 +14,27 @@ import android.widget.TextView;
 public class HomeScreen extends AppCompatActivity {
 
     private DBhandler helper = new DBhandler(this);
-
+    private int id;
+    String[] userDetails;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle extras = getIntent().getExtras();
         setContentView(R.layout.activity_home_screen);
 
-        int id;
-        String[] userDetails;
-
         if (extras != null) {
             id = (int) extras.get("id");
-            userDetails = helper.userDetails(id);
 //            todo: fragment these to keep textviews on all screens.
 //            todo: move code to a different function.
-            System.out.println(userDetails[0]);
-            String firstName = userDetails[0];
-            String lastName = userDetails[1];
-            String balance = userDetails[2];
-            TextView nameView = (TextView) findViewById(R.id.FullName);
-            TextView idView = (TextView) findViewById(R.id.Asurite);
-            TextView balanceView = (TextView) findViewById(R.id.MandG);
-            nameView.setText(firstName + " " + lastName);
-            idView.setText("ASURITE: " + id);
-            balanceView.setText("Balance: $" + balance);
-            System.out.println("Working");
+            populateText();
         }
-
 
         Button transaction = (Button) findViewById(R.id.transactionNav);
         transaction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent myIntent = new Intent(HomeScreen.this, MakeTransaction.class);
-//                TODO: Pass in any needed data.
-//                myIntent.putExtra("key", value); //Optional parameters
+                myIntent.putExtra("id", id);
                 startActivity(myIntent);
             }
         });
@@ -58,8 +43,7 @@ public class HomeScreen extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent myIntent = new Intent(HomeScreen.this, ViewPurchases.class);
-//                TODO: Pass in any needed data.
-//                myIntent.putExtra("key", value); //Optional parameters
+                myIntent.putExtra("id", id); //Optional parameters
                 startActivity(myIntent);
             }
         });
@@ -68,10 +52,32 @@ public class HomeScreen extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent myIntent = new Intent(HomeScreen.this, ViewTransactions.class);
-//                TODO: Pass in any needed data.
-//                myIntent.putExtra("key", value); //Optional parameters
+                myIntent.putExtra("id", id);
                 startActivity(myIntent);
             }
         });
+
+    }
+
+    @Override
+    public void onResume()
+    {  // After a pause OR at startup
+        super.onResume();
+//            todo: fragment these to keep textviews on all screens.
+//            todo: move code to a different function.
+        populateText();
+    }
+    public void populateText(){
+        userDetails = helper.userDetails(id);
+        String firstName = userDetails[0];
+        String lastName = userDetails[1];
+        String balance = userDetails[2];
+        TextView nameView = (TextView) findViewById(R.id.FullName);
+        TextView idView = (TextView) findViewById(R.id.Asurite);
+        TextView balanceView = (TextView) findViewById(R.id.MandG);
+        nameView.setText(firstName + " " + lastName);
+        idView.setText("ASURITE: " + id);
+        balanceView.setText("Balance: $" + balance);
+        System.out.println("Working");
     }
 }

@@ -5,9 +5,10 @@ package com.example.justin.mg;
  */
 public class Purchase {
     private String business, date;
-    private int id, amount;
+    private int id;
+    private float amount;
 
-    public Purchase(String business, String date, int amount, int id) {
+    public Purchase(String business, String date, float amount, int id) {
         this.business = business;
         this.date = date;
         this.amount = amount;
@@ -30,11 +31,11 @@ public class Purchase {
         this.date = date;
     }
 
-    public int getAmount() {
+    public float getAmount() {
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(float amount) {
         this.amount = amount;
     }
 

@@ -6,14 +6,19 @@ import android.content.Context;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Justin on 1/24/2016.
  */
 public class DBhandler extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
     private static final String DATABASE_NAME = "userDB.db";
     private static final String TABLE_USERS = "users";
+    private static final String TABLE_PURCHASES = "purchases";
+    private static final String TABLE_TRANSACTIONS = "transactions";
 
     private static final String ASURITE_ID = "id";
     private static final String FIRST_NAME = "firstName";
@@ -24,6 +29,7 @@ public class DBhandler extends SQLiteOpenHelper {
     //    TODO: Verify that email and password should be in this db.
     private static final String EMAIL = "email";
     private static final String PASSWORD = "password";
+    public static final String PURCHASES_ID = "pid";
     public static final String PURCHASES_BUSINESS = "purchasesBusiness";
     public static final String PURCHASES_DATE = "purchasesDate";
     public static final String PURCHASES_AMOUNT = "purchasesAmount";
@@ -43,16 +49,25 @@ public class DBhandler extends SQLiteOpenHelper {
                 + ASURITE_ID + " INTEGER PRIMARY KEY,"
                 + FIRST_NAME + " TEXT,"
                 + LAST_NAME + " TEXT,"
-                + BALANCE + " INTEGER,"
+                + BALANCE + " REAL,"
                 + EMAIL + " TEXT,"
                 + PASSWORD + " TEXT" + ");";
+        String CREATE_PURCHASES_TABLE = "CREATE TABLE " + TABLE_PURCHASES + "("
+                + PURCHASES_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + ASURITE_ID + " INTEGER,"
+                + PURCHASES_BUSINESS + " TEXT,"
+                + PURCHASES_AMOUNT + " REAL,"
+                + PURCHASES_DATE + " DATETIME DEFAULT CURRENT_TIMESTAMP" + ");";
         db.execSQL(CREATE_PRODUCTS_TABLE);
+        db.execSQL(CREATE_PURCHASES_TABLE);
         this.db=db;
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         String query = "DROP TABLE IF EXISTS " + TABLE_USERS;
+        db.execSQL(query);
+        query = "DROP TABLE IF EXISTS " + TABLE_PURCHASES;
         db.execSQL(query);
         onCreate(db);
     }
@@ -71,6 +86,40 @@ public class DBhandler extends SQLiteOpenHelper {
         values.put(PASSWORD, u.getPassword());
         db.insert(TABLE_USERS, null, values);
         db.close();
+    }
+    public void insertPurchase(Purchase p){
+        db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(ASURITE_ID, p.getId());
+        values.put(PURCHASES_BUSINESS, p.getBusiness());
+        values.put(PURCHASES_AMOUNT, p.getAmount());
+        values.put(PURCHASES_DATE, p.getDate());
+        db.insert(TABLE_PURCHASES, null, values);
+        db.close();
+    }
+
+    public List<List<String>> getPurchases(int student_id){
+//        TODO: Change to list? or move code in purchaseList
+        db = this.getReadableDatabase();
+        List<List<String>> listOfLists = new ArrayList<>();
+        System.out.println("Current id: " + student_id);
+        String query = "select * from " + TABLE_PURCHASES + " where id = " + student_id;
+        Cursor cursor = db.rawQuery(query, null);
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            ArrayList<String> list = new ArrayList<>();
+//            Primary key and Student id are the first 2 cols
+//            TODO: REFACTOR, This way feels extremely sloppy.
+            for(int i = 2; i < cursor.getColumnCount(); i++){
+                list.add(cursor.getString(i));
+            }
+            listOfLists.add(list);
+            cursor.moveToNext();
+        }
+        cursor.close();
+        System.out.println("purchases: " + listOfLists);
+        return listOfLists;
     }
 
     public String searchPass(String mEmail) {
@@ -96,6 +145,19 @@ public class DBhandler extends SQLiteOpenHelper {
         db.close();
         cursor.close();
         return b;
+    }
+    public void deductBalance(int currentId, float deducted_amount){
+        db = this.getReadableDatabase();
+        String query = "select balance from " + TABLE_USERS + " where id = " + currentId;
+        Cursor cursor = db.rawQuery(query, null);
+
+        cursor.moveToFirst();
+        float current_amount = cursor.getFloat(0);
+        current_amount -= deducted_amount;
+        cursor.close();
+        query = "update " + TABLE_USERS + " set " + BALANCE + "=" + current_amount + " where id = " + currentId;
+        db.execSQL(query);
+        db.close();
     }
     public int getUserId(String currentEmail){
         db = this.getReadableDatabase();
