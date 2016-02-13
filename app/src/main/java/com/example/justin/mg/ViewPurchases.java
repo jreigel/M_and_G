@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ViewPurchases extends AppCompatActivity {
-//    private String [][] fillerData= {{"Business", "Amount", "Date"}, {"Subway", "$6.17", "12/15/15"}, {"Starbucks", "$8.32", "12/20/15"}, {"Chik-fil-a", "$10.50", "12/23/15"} };
     private DBhandler helper = new DBhandler(this);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +35,7 @@ public class ViewPurchases extends AppCompatActivity {
 
         TableRow tableRow;
         int textSize, typeface;
-        String [][] fillerData= {{"Business", "Amount", "Date"}, {"Subway", "$6.17", "12/15/15"}, {"Starbucks", "$8.32", "12/20/15"}, {"Chik-fil-a", "$10.50", "12/23/15"} };
+        String [] headerData= {"Business", "Amount", "Date(Y-M-D)"};
 
         if (extras != null) {
             id = (int) extras.get("id");
@@ -61,12 +60,31 @@ public class ViewPurchases extends AppCompatActivity {
 
         sv.addView(tableLayout);
         rl.addView(sv, tableParams);
+
+//        header
+        tableRow = new TableRow(getApplicationContext());
+        for(String header: headerData){
+//            TODO: refactor column data to prevent duplicated code and visibility issues (layoutparams?)
+            TextView columnData = new TextView(getApplicationContext());
+            columnData.setTextColor(Color.BLACK);
+            columnData.setText(header);
+            columnData.setPadding(20, 20, 20, 20);
+            columnData.setBackground(ContextCompat.getDrawable(this, R.drawable.table_border));
+            textSize = 23;
+            typeface = Typeface.BOLD;
+            columnData.setTextSize(TypedValue.COMPLEX_UNIT_DIP, textSize);
+            columnData.setTypeface(null, typeface);
+            tableRow.addView(columnData);
+        }
+        tableLayout.addView(tableRow);
         for(int i = 0; i < productDetails.size(); i++)
         {
             tableRow = new TableRow(getApplicationContext());
             for(int j = 0; j< productDetails.get(i).size(); j++)
             {
                 TextView columnData = new TextView(getApplicationContext());
+//                if it is the balance column or not
+//                Todo: refactor this, too tightly coupled.
                 if(j == 1) {
                     DecimalFormat df = new DecimalFormat("#0.00");
                     columnData.setText("$" + df.format(Float.parseFloat(productDetails.get(i).get(j))));
@@ -77,8 +95,8 @@ public class ViewPurchases extends AppCompatActivity {
                 columnData.setTextColor(Color.BLACK);
                 columnData.setPadding(20, 20, 20, 20);
                 columnData.setBackground(ContextCompat.getDrawable(this, R.drawable.table_border));
-                textSize = (i == 0) ? 25 : 21;
-                typeface = (i == 0) ? Typeface.BOLD : Typeface.NORMAL;
+                textSize = 21;
+                typeface = Typeface.NORMAL;
                 columnData.setTextSize(TypedValue.COMPLEX_UNIT_DIP, textSize);
                 columnData.setTypeface(null, typeface);
                 tableRow.addView(columnData);

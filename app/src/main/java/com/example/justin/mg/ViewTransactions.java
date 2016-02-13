@@ -2,9 +2,9 @@ package com.example.justin.mg;
 
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.TypedValue;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
@@ -12,7 +12,6 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ViewTransactions extends AppCompatActivity {

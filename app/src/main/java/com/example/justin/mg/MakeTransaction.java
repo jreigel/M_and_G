@@ -11,6 +11,7 @@ import android.widget.EditText;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class MakeTransaction extends AppCompatActivity {
 
@@ -23,9 +24,6 @@ public class MakeTransaction extends AppCompatActivity {
         setContentView(R.layout.activity_make_transaction);
 
         Bundle extras = getIntent().getExtras();
-
-        Purchase p;
-
 
         if (extras != null) {
             student_id = (int) extras.get("id");
@@ -48,12 +46,12 @@ public class MakeTransaction extends AppCompatActivity {
                         EditText businessView = (EditText) findViewById((R.id.BusinessInput));
                         EditText amountView = (EditText) findViewById((R.id.AmountInput));
                         String business = businessView.getText().toString();
-                        float amount = 0;
+                        float amount;
                         try {
                             amount = Float.parseFloat(amountView.getText().toString());
                             amount = round(amount, 2);
                             System.out.println(amount);
-                            String date = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+                            String date = new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date());
                             Purchase p = new Purchase(business, date, amount, student_id);
                             helper.insertPurchase(p);
                             helper.deductBalance(student_id, amount);

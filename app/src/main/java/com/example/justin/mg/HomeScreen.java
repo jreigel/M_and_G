@@ -63,8 +63,6 @@ public class HomeScreen extends AppCompatActivity {
     public void onResume()
     {  // After a pause OR at startup
         super.onResume();
-//            todo: fragment these to keep textviews on all screens.
-//            todo: move code to a different function.
         populateText();
     }
     public void populateText(){

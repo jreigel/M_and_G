@@ -23,10 +23,8 @@ public class DBhandler extends SQLiteOpenHelper {
     private static final String ASURITE_ID = "id";
     private static final String FIRST_NAME = "firstName";
     private static final String LAST_NAME = "lastName";
-//    TODO: verify that balance and purchase history should be strings here for values.put()
     private static final String BALANCE = "balance";
 
-    //    TODO: Verify that email and password should be in this db.
     private static final String EMAIL = "email";
     private static final String PASSWORD = "password";
     public static final String PURCHASES_ID = "pid";
@@ -72,9 +70,6 @@ public class DBhandler extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-//    TODO: change purchase history to 2d array!
-//    TODO: Or make a different db for the purchase history?
-
     public void insertUser(User u) {
         db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -99,7 +94,6 @@ public class DBhandler extends SQLiteOpenHelper {
     }
 
     public List<List<String>> getPurchases(int student_id){
-//        TODO: Change to list? or move code in purchaseList
         db = this.getReadableDatabase();
         List<List<String>> listOfLists = new ArrayList<>();
         System.out.println("Current id: " + student_id);
